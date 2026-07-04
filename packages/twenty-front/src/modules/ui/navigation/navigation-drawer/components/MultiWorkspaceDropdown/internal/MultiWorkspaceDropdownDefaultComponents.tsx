@@ -25,6 +25,13 @@ export const MultiWorkspaceDropdownDefaultComponents = () => {
             window.location.href = '/finance';
           }}
         />
+        <MenuItem
+          LeftIcon={IconSwitchHorizontal}
+          text={t`Switch to Nobridge Integration`}
+          onClick={() => {
+            window.location.href = 'https://ops.heydeal.co';
+          }}
+        />
       </DropdownMenuItemsContainer>
     </DropdownContent>
   );
