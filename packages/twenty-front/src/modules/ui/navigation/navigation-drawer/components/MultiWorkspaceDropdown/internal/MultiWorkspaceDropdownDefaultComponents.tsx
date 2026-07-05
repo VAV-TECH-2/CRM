@@ -22,14 +22,14 @@ export const MultiWorkspaceDropdownDefaultComponents = () => {
           LeftIcon={IconSwitchHorizontal}
           text={t`Switch to Nobridge Finance`}
           onClick={() => {
-            window.location.href = '/finance';
+            window.location.href = 'https://fin.nobridge.co';
           }}
         />
         <MenuItem
           LeftIcon={IconSwitchHorizontal}
           text={t`Switch to Nobridge Integration`}
           onClick={() => {
-            window.location.href = 'https://ops.heydeal.co';
+            window.location.href = 'https://node.nobridge.co';
           }}
         />
       </DropdownMenuItemsContainer>
