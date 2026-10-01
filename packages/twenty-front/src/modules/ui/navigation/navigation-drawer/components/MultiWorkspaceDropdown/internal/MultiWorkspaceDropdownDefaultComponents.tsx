@@ -14,20 +14,20 @@ export const MultiWorkspaceDropdownDefaultComponents = () => {
   return (
     <DropdownContent widthInPixels={240}>
       <DropdownMenuItemsContainer>
-        <MenuItemSelectAvatar text="Nobridge Operations" selected={true} />
+        <MenuItemSelectAvatar text="Operations" selected={true} />
       </DropdownMenuItemsContainer>
       <DropdownMenuSeparator />
       <DropdownMenuItemsContainer>
         <MenuItem
           LeftIcon={IconSwitchHorizontal}
-          text={t`Switch to Nobridge Finance`}
+          text={t`Switch to Finance`}
           onClick={() => {
             window.location.href = '/finance';
           }}
         />
         <MenuItem
           LeftIcon={IconSwitchHorizontal}
-          text={t`Switch to Nobridge Integration`}
+          text={t`Switch to Integration`}
           onClick={() => {
             window.location.href = '/ops';
           }}
