@@ -4,7 +4,7 @@
 // Versioned filename to defeat browser/CDN caching of the old logo at the
 // previous path (/images/nobridge-logo.png was cached for 24h). Bump the suffix
 // whenever the logo art changes so clients always fetch the new file.
-// Host = the CRM's own domain (crm.nobridge.co since the 2026-07-05 migration;
-// heydeal.co is retired).
+// Host = the CRM's own domain (app.nobridge.co since 2026-10-01, when CRM,
+// Finance and Ops moved onto one origin; crm.nobridge.co before that).
 export const DEFAULT_WORKSPACE_LOGO =
-  'https://crm.nobridge.co/images/nobridge-logo-2.png';
+  'https://app.nobridge.co/images/nobridge-logo-2.png';

@@ -7,6 +7,7 @@ import { isAppEffectRedirectEnabledState } from '@/app/states/isAppEffectRedirec
 import { ONBOARDING_PATHS } from '@/auth/constants/OnboardingPaths';
 import { ONGOING_USER_CREATION_PATHS } from '@/auth/constants/OngoingUserCreationPaths';
 import { useReturnToPath } from '@/auth/hooks/useReturnToPath';
+import { currentUserState } from '@/auth/states/currentUserState';
 import { useRequestFreshCaptchaToken } from '@/captcha/hooks/useRequestFreshCaptchaToken';
 import { isCaptchaScriptLoadedState } from '@/captcha/states/isCaptchaScriptLoadedState';
 import { isCaptchaRequiredForPath } from '@/captcha/utils/isCaptchaRequiredForPath';
@@ -56,6 +57,20 @@ const AUTH_AND_ONBOARDING_PATHS = [
   AppPath.ResetPassword,
 ];
 
+// Nobridge Finance and the Ops dashboard are separate apps served on this
+// same origin (app.nobridge.co/finance, /ops). They send signed-out users here
+// with ?returnToPath=/finance/... — the router has no such route, so that
+// destination must be a full page load, not a client-side navigate.
+const SIBLING_APP_PATH_PREFIXES = ['/finance', '/ops'];
+
+const isSiblingAppPath = (path: string) =>
+  SIBLING_APP_PATH_PREFIXES.some(
+    (prefix) =>
+      path === prefix ||
+      path.startsWith(`${prefix}/`) ||
+      path.startsWith(`${prefix}?`),
+  );
+
 // TODO: break down into smaller functions and / or hooks
 //  - moved usePageChangeEffectNavigateLocation into dedicated hook
 export const PageChangeEffect = () => {
@@ -68,6 +83,8 @@ export const PageChangeEffect = () => {
 
   const pageChangeEffectNavigateLocation =
     usePageChangeEffectNavigateLocation();
+
+  const currentUser = useAtomStateValue(currentUserState);
 
   const eventTracker = useEventTracker();
 
@@ -177,6 +194,19 @@ export const PageChangeEffect = () => {
       const consumedReturnToPath =
         getReturnToPath() === pageChangeEffectNavigateLocation;
 
+      if (isSiblingAppPath(pageChangeEffectNavigateLocation)) {
+        // The sibling apps trust the access token in the tokenPair cookie.
+        // Hand off only once currentUser has loaded: that query is what makes
+        // Apollo renew an expired token, so leaving earlier would carry a
+        // dead token over and bounce straight back here, in a loop.
+        if (!isDefined(currentUser)) {
+          return;
+        }
+        clearReturnToPath();
+        window.location.assign(pageChangeEffectNavigateLocation);
+        return;
+      }
+
       navigate(pageChangeEffectNavigateLocation);
 
       if (consumedReturnToPath) {
@@ -185,6 +215,7 @@ export const PageChangeEffect = () => {
     }
   }, [
     navigate,
+    currentUser,
     pageChangeEffectNavigateLocation,
     initializeQueryParamState,
     isAppEffectRedirectEnabled,
